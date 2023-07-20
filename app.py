@@ -1,5 +1,5 @@
-from flask import Flask, request, redirect, render_template
-from models import db, connect_db, User
+from flask import Flask, request, redirect, render_template, flash
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://ronaldlopez:123456@localhost:5432/blogly"
@@ -15,7 +15,14 @@ with app.app_context():
 @app.route('/')
 def root():
 
-    return redirect("/users")
+    posts = Post.query.order_by(Post.created_at.desc()).limit(5).all()
+    return render_template("posts/homepage.html", posts=posts)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+
+    return render_template('404.html'), 404
 
 @app.route('/users')
 def users_index():
