@@ -15,6 +15,8 @@ class User(db.Model):
     last_name = db.Column(db.Text, nullable=False)
     image_url = db.Column(db.Text, nullable=False, default=DEFAULT_IMAGE_URL)
 
+    posts = db.relationship("Post", backref="user", cascade="all, delete-orphan")
+
     @property
     def full_name(self):
 
@@ -58,7 +60,6 @@ class Tag(db.Model):
         secondary="posts_tags",
         backref="tags",
     )
-
 
 def connect_db(app):
 
